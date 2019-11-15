@@ -55,7 +55,7 @@
 
 (require 'with-emacs)
 
-(defun ob-with-emacs--sandbox-parameter (params)
+(defun ob-with-emacs--emacs-parameter (params)
   (catch 'break
     (dolist (name (append with-emacs-partially-applied-functions '(with-emacs)))
       (let* ((key (intern (format ":%s" name)))
@@ -63,14 +63,14 @@
         (when param
           (throw 'break param))))))
 
-;; (ob-with-emacs--sandbox-parameter '((:with-emacs . "/path/to/emacs")))
+;; (ob-with-emacs--emacs-parameter '((:with-emacs . "/path/to/emacs")))
 
 ;;;###autoload
-(defalias 'org-babel-execute:emacs-lisp-in-sandbox 'ob-with-emacs-org-babel-execute-elisp-src-block)
+(defalias 'org-babel-execute:emacs-lisp-with-emacs 'ob-with-emacs-org-babel-execute-elisp-src-block)
 
 ;;;###autoload
 (defun ob-with-emacs-org-babel-execute-elisp-src-block (&optional orig-fun body params)
-  "Like `org-babel-execute:emacs-lisp', but run in sandbox.
+  "Like `org-babel-execute:emacs-lisp', but run in separate Emacs process.
 
 Original docstring for org-babel-execute:emacs-lisp:
 
@@ -81,7 +81,7 @@ Execute a block of emacs-lisp code with Babel."
      (warn "ob-with-emacs-org-babel-execute-elisp-src-block is no longer needed in org-ctrl-c-ctrl-c-hook")
      nil)
     (t
-     (let ((emacs-param (ob-with-emacs--sandbox-parameter params)))
+     (let ((emacs-param (ob-with-emacs--emacs-parameter params)))
        (cond
         ;; If there is no :playonline parameter, call the original function
         ((not emacs-param)
@@ -121,7 +121,7 @@ Execute a block of emacs-lisp code with Babel."
                 (org-babel-pick-name (cdr (assq :rowname-names params))
                                      (cdr (assq :rownames params)))))))))))))
 
-(advice-add 'org-babel-execute:emacs-lisp :around 'org-babel-execute:emacs-lisp-in-sandbox)
+(advice-add 'org-babel-execute:emacs-lisp :around 'org-babel-execute:emacs-lisp-with-emacs)
 
 (provide 'ob-with-emacs)
 
