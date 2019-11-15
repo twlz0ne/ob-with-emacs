@@ -69,7 +69,7 @@
 (defalias 'org-babel-execute:emacs-lisp-in-sandbox 'ob-with-emacs-org-babel-execute-elisp-src-block)
 
 ;;;###autoload
-(defun ob-with-emacs-org-babel-execute-elisp-src-block (&optional orig-fn body params)
+(defun ob-with-emacs-org-babel-execute-elisp-src-block (&optional orig-fun body params)
   "Like `org-babel-execute:emacs-lisp', but run in sandbox.
 
 Original docstring for org-babel-execute:emacs-lisp:
